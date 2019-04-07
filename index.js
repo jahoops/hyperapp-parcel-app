@@ -1,31 +1,30 @@
 import { h, app } from 'hyperapp'
 import debounce from 'debounce-promise'
-
+import './jsondata.js'
 import './styles/main.sass'
 
-const getUserDataFn = username => {
-  return fetch(`https://api.github.com/users/${username}`)
-    .then(res => res.json())
+const getfoundListFn = anyinfo => {
+    return jsondata.laureates.filter(obj => Object.keys(obj).some(key => obj[key].includes(anyinfo))); 
 }
 
-const getUserData = debounce(getUserDataFn, 700)
+const getfoundList = debounce(getfoundListFn, 700)
 
 // single global state - one per app
 const state = {
-  username: '',
-  userData: null,
+  anyinfo: '',
+  foundList: [],
 }
 
 const actions = {
-  updateUsername: (username) => (state, actions) => {
-    // perform side effect - fetching the user data from github API
-    getUserData(username)
-      .then(actions.setUserData)
-    //  what the action actually changes in state is just username
-    return { username }
+  updateanyinfo: (anyinfo) => (state, actions) => {
+    // perform side effect - fetching the user data from JSON
+    getfoundList(anyinfo)
+      .then(actions.setFoundList)
+    //  what the action actually changes in state is just anyinfo
+    return { anyinfo }
   },
   // a simplest action, which just updates some part of state
-  setUserData: userData => state => ({ userData })
+  setfoundList: foundList => state => ({ foundList })
 }
 
 // here comes the JSX, but remember that it's just syntactic sugar:
@@ -35,23 +34,22 @@ const actions = {
 // the 'h' corresponds to 'React.createElement' in React
 const view = (state, actions) =>
   <main>
-    <div>Search github users:</div>
+    <div>Search Nobel laureates:</div>
     <input
       type='text'
       className='searchInput'
-      value={state.username}
-      oninput={e => actions.updateUsername(e.target.value)}
+      value={state.anyinfo}
+      oninput={e => actions.updateanyinfo(e.target.value)}
     />
     <br/>
     <div className='userCard'>
-      {state.userData ? (
-        <div>
-          <img class='userCard__img' src={state.userData.avatar_url} />
-          <div class='userCard__name'>{state.userData.name}</div>
-          <div class='userCard__location'>{state.userData.location}</div>
+      {state.foundList.length ? state.FoundList.map( item => {
+        return <div>
+          <div class='userCard__name'>{item.firstname + ' ' + item.surname}</div>
+          <div class='userCard__location'>{item.bornCity + ', ' + item.botnCountry}</div>
         </div>
-      ) : (
-        <div>👆 search 'em</div>
+      }) : (
+        <div>👆 enter name or other info</div>
       )}
     </div>
   </main>

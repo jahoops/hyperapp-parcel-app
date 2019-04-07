@@ -1,4 +1,4 @@
-const jsondata = {
+{
     "laureates": [{
         "id": "1",
         "firstname": "Wilhelm Conrad",

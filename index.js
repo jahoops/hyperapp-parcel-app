@@ -1,30 +1,43 @@
-import { h, app } from 'hyperapp'
+import {
+  h,
+  app
+} from 'hyperapp'
 import debounce from 'debounce-promise'
-import './jsondata.js'
+import * as jsondata from './jsondata.json'
 import './styles/main.sass'
 
-const getfoundListFn = anyinfo => {
-    return jsondata.laureates.filter(obj => Object.keys(obj).some(key => obj[key].includes(anyinfo))); 
+const getfoundListFn = search => {
+  return jsondata.laureates.filter(obj => Object.keys(obj).some(key => {
+    if(typeof obj[key] === 'string') {
+      return (obj[key].toLowerCase().indexOf(search.toLowerCase()) > -1);
+    }else {
+      return false;
+    }
+  }))
 }
 
 const getfoundList = debounce(getfoundListFn, 700)
 
 // single global state - one per app
 const state = {
-  anyinfo: '',
+  search: '',
   foundList: [],
 }
 
 const actions = {
-  updateanyinfo: (anyinfo) => (state, actions) => {
+  updatesearch: search => (state, actions) => {
     // perform side effect - fetching the user data from JSON
-    getfoundList(anyinfo)
-      .then(actions.setFoundList)
-    //  what the action actually changes in state is just anyinfo
-    return { anyinfo }
+
+    getfoundList(search).then(newlist => actions.setfoundList(newlist))
+    //  what the action actually changes in state is just search
+    return {
+      search
+    }
   },
   // a simplest action, which just updates some part of state
-  setfoundList: foundList => state => ({ foundList })
+  setfoundList: foundList => state => ({
+    foundList
+  })
 }
 
 // here comes the JSX, but remember that it's just syntactic sugar:
@@ -34,24 +47,21 @@ const actions = {
 // the 'h' corresponds to 'React.createElement' in React
 const view = (state, actions) =>
   <main>
-    <div>Search Nobel laureates:</div>
-    <input
-      type='text'
-      className='searchInput'
-      value={state.anyinfo}
-      oninput={e => actions.updateanyinfo(e.target.value)}
-    />
+    <div> Search Nobel laureates: </div> 
+    <input type = 'text' className = 'searchInput' value = { state.search }
+      oninput = { e => actions.updatesearch(e.target.value) } /> 
     <br/>
-    <div className='userCard'>
-      {state.foundList.length ? state.FoundList.map( item => {
-        return <div>
-          <div class='userCard__name'>{item.firstname + ' ' + item.surname}</div>
-          <div class='userCard__location'>{item.bornCity + ', ' + item.botnCountry}</div>
-        </div>
-      }) : (
-        <div>👆 enter name or other info</div>
-      )}
-    </div>
+      { state.foundList.length ? state.foundList.map(item => {
+        return  <div className='userCard'> 
+                  <div class='userCard__name'> 
+                    { item.firstname + ' ' + item.surname } 
+                  </div> 
+                  <div class='userCard__location'> 
+                    { item.bornCity + ', ' + item.bornCountry } 
+                  </div> 
+                </div>
+        }) : <div className='userCard'>  👆enter name or other info </div>
+      } 
   </main>
 
 // This runs the app. The return object (here not used) makes it possible

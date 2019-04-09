@@ -2,6 +2,7 @@ import {
   h,
   app
 } from 'hyperapp'
+import withCompat from "hyperapp-compat";
 import debounce from 'debounce-promise'
 import * as jsondata from './jsondata.json'
 import './styles/main.sass'
@@ -18,38 +19,29 @@ const getfoundListFn = search => {
 
 const getfoundList = debounce(getfoundListFn, 700)
 
-// single global state - one per app
-const state = {
+const initialState = {
   search: '',
   foundList: [],
 }
 
-const actions = {
-  updatesearch: search => (state, actions) => {
-    // perform side effect - fetching the user data from JSON
+const UpdateUrl = (state, { target: { value } }) => ({...state, url: value });
 
-    getfoundList(search).then(newlist => actions.setfoundList(newlist))
-    //  what the action actually changes in state is just search
-    return {
-      search
-    }
-  },
-  // a simplest action, which just updates some part of state
-  setfoundList: foundList => state => ({
-    foundList
-  })
+const  UpdateSearch = (state, { target: { value } }) => ({...state, search: value}) => {
+  getfoundList(state.search).then(newlist => SetFoundList(newlist))
+  return {
+    search
+  }
 }
+const SetFoundList = newlist => ({...state, foundList: newlist}) => ({
+  foundList
+})
 
-// here comes the JSX, but remember that it's just syntactic sugar:
-// <div className='classy'>hello</div>
-// becomes
-// h('div', {className: 'classy'}, 'hello')
-// the 'h' corresponds to 'React.createElement' in React
-const view = (state, actions) =>
+
+const view = ({search, foundList}) =>
   <main>
     <div> Search Nobel laureates: </div> 
     <input type = 'text' className = 'searchInput' value = { state.search }
-      oninput = { e => actions.updatesearch(e.target.value) } /> 
+      onInput = { UpdateSearch } /> 
     <br/>
       { state.foundList.length ? state.foundList.map(item => {
         return  <div className='userCard'> 
@@ -69,4 +61,11 @@ const view = (state, actions) =>
 // In a real app, you should not attach the view directly to the body, but
 // create some element in the static HTML to attach to.
 // more on that: https://medium.com/@dan_abramov/two-weird-tricks-that-fix-react-7cf9bbdef375#486f
-app(state, actions, view, document.body)
+
+//app(state, actions, view, document.body)
+
+withCompat(app)({
+  init: initialState,
+  view,
+  container: document.body
+});

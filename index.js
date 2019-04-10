@@ -1,15 +1,14 @@
 import { app, h } from './hyperappv2'
-import * as jsondata from './jsondata.json'
 import './styles/main.sass'
 
 const getfoundListFn = ( find ) => {
-  return jsondata.laureates.filter(obj => Object.keys(obj).some(key => {
+  return find ? window.jsondata.filter(obj => Object.keys(obj).some(key => {
     if(typeof obj[key] === 'string') {
       return (obj[key].toLowerCase().indexOf(find.toLowerCase()) > -1);
     } else {
       return false;
     }
-  }))
+  })) : ''
 }
 
 const  UpdateSearch = (state, event) => ({ search: event.target.value, foundList : getfoundListFn(event.target.value)})

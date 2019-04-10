@@ -1,8 +1,8 @@
 {
   "name": "hyperparcel",
   "scripts": {
-    "start": "parcel index.js",
-    "build": "parcel build index.js"
+    "start": "parcel hypersearch.js",
+    "build": "parcel build hypersearch.js"
   },
   "dependencies": {
     "babel-plugin-transform-react-jsx": "^6.24.1",

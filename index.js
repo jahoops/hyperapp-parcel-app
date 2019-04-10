@@ -34,5 +34,5 @@ app({
         } 
     </main>
   ),
-  container: document.body
+  container: $('.hypersearch')[0]
 });

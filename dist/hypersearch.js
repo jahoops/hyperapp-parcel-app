@@ -566,24 +566,21 @@ var _hyperappv = require("./hyperappv2");
 
 require("./styles/main.sass");
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var getfoundListFn = function getfoundListFn(find) {
-  return find ? window.jsondata.filter(function (obj) {
+  return find ? jsondata.filter(function (obj) {
     return Object.keys(obj).some(function (key) {
-      if (typeof obj[key] === 'string') {
-        return obj[key].toLowerCase().indexOf(find.toLowerCase()) > -1;
-      } else {
-        return false;
-      }
+      return typeof obj[key] === 'string' ? obj[key].toLowerCase().indexOf(find.toLowerCase()) > -1 : false;
     });
   }) : '';
 };
 
 var UpdateSearch = function UpdateSearch(state, event) {
-  return {
+  return _extends({}, state, {
     search: event.target.value,
-    foundList: getfoundListFn(event.target.value),
-    variation: state.variation
-  };
+    foundList: getfoundListFn(event.target.value)
+  });
 };
 
 $('.hypersearch').each(function () {
@@ -645,7 +642,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40855" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37287" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

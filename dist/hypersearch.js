@@ -568,6 +568,17 @@ require("./styles/main.sass");
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var themes = {
+  theme1: {
+    userCard: 'userCard text-white bg-dark col-auto',
+    userCard_location: 'userCard text-success'
+  },
+  theme2: {
+    userCard: 'userCard text-dark bg-success col-4',
+    userCard_location: 'userCard text-warning'
+  }
+};
+
 var getfoundListFn = function getfoundListFn(find) {
   return find ? jsondata.filter(function (obj) {
     return Object.keys(obj).some(function (key) {
@@ -588,27 +599,27 @@ $('.hypersearch').each(function () {
     init: {
       search: '',
       foundList: [],
-      variation: $(this).attr('variation')
+      theme: $(this).attr('theme')
     },
     view: function view(_ref) {
       var search = _ref.search,
           foundList = _ref.foundList,
-          variation = _ref.variation;
-      return (0, _hyperappv.h)("main", null, (0, _hyperappv.h)("div", null, " Search Nobel laureates (", variation, "): "), (0, _hyperappv.h)("input", {
+          theme = _ref.theme;
+      return (0, _hyperappv.h)("main", null, (0, _hyperappv.h)("div", null, " Search Nobel laureates (", theme, "): "), (0, _hyperappv.h)("input", {
         type: "text",
         className: "searchInput",
         value: search,
         oninput: UpdateSearch
       }), (0, _hyperappv.h)("br", null), foundList.length ? foundList.map(function (item) {
         return (0, _hyperappv.h)("div", {
-          className: "userCard"
+          className: themes[theme].userCard
         }, (0, _hyperappv.h)("div", {
-          "class": variation
+          "class": themes[theme].userCard
         }, item.firstname + ' ' + item.surname), (0, _hyperappv.h)("div", {
-          "class": "userCard__location"
+          "class": themes[theme].userCard_location
         }, item.bornCity + ', ' + item.bornCountry));
       }) : (0, _hyperappv.h)("div", {
-        className: "userCard"
+        className: themes[theme].userCard
       }, "  \uD83D\uDC46 enter name or other info "));
     },
     container: this

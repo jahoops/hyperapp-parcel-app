@@ -1,0 +1,26 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "useBuiltIns": true,
+        "targets": {
+          "browsers": [
+            "last 2 versions",
+            "safari > 8",
+            "not ie < 11"
+          ]
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "transform-react-jsx",
+      {
+        "pragma": "h"
+      }
+    ],
+    "transform-object-rest-spread"
+  ]
+}
